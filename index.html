@@ -4,48 +4,100 @@
   <meta charset="UTF-8">
   <title>Happy Birthday, My Love!</title>
   <style>
+    @keyframes float {
+      0%   { transform: translateY(0) scale(1);}
+      50%  { transform: translateY(-30px) scale(1.15);}
+      100% { transform: translateY(0) scale(1);}
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to   { opacity: 1;}
+    }
     body {
-      background: linear-gradient(135deg, #ffb6c1 0%, #ffe4e1 100%);
+      background: linear-gradient(120deg,#ffb6c1 0%,#ffe4e1 100%);
       color: #333;
       font-family: 'Segoe UI', Arial, sans-serif;
-      text-align: center;
-      padding: 0;
-      margin: 0;
+      margin: 0; padding: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
     }
-    .heart {
-      font-size: 80px;
+    .heart-anim {
+      font-size: 76px;
       color: #ff69b4;
-      margin-top: 20px;
+      margin: 40px 0 20px 0;
+      /* floating heart */
+      animation: float 2.2s ease-in-out infinite;
     }
     .container {
-      background: rgba(255,255,255,0.9);
-      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      border-radius: 18px;
       display: inline-block;
-      padding: 40px 30px;
-      margin-top: 20px;
       box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      padding: 38px 32px;
+      margin-top: 18px;
+      max-width: 370px;
+      animation: fadeIn 1.5s ease;
     }
-    h1 { font-size: 2.7em; margin-bottom: 10px; }
-    p { font-size: 1.35em; }
+    h1 {
+      font-size: 2.5em;
+      color: #d72660;
+      text-shadow: 1px 1px #fff2, 2px 2px #f3c;
+    }
+    p { font-size: 1.35em;}
+    .music-btn {
+      margin-top: 32px;
+      padding: 10px 24px;
+      font-size: 1em;
+      border-radius: 8px;
+      background: #fb6dd3;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .music-btn:hover {
+      background: #d72660;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="heart">💖</div>
+    <div class="heart-anim" id="heart">💖</div>
     <h1>Happy Birthday!</h1>
     <p>
       To my dearest love,<br>
-      Wishing you the happiest birthday ever!<br>
-      You light up my life in ways you'll never know.<br>
-      I love you more than words can say.<br>
+      You light up my days and fill my heart with joy.<br>
+      Wishing you the most wonderful birthday!<br>
       <br>
-      <b>Have a magical day!</b>
+      <b>I love you more than words can say!</b>
     </p>
-    <div class="heart">🎂</div>
+    <div style="font-size:60px; margin:13px;">🎂</div>
+    <button class="music-btn" onclick="toggleMusic()">🔊 Play Birthday Song</button>
+    <audio id="bgmusic" loop muted>
+      <source src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa7c79.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
   </div>
+
+  <script>
+    // Simple toggle to play/unmute the audio
+    const music = document.getElementById('bgmusic');
+    let playing = false;
+    function toggleMusic() {
+      if (!playing) {
+        music.muted = false;
+        music.play();
+        playing = true;
+        document.querySelector('.music-btn').textContent = "🔇 Pause";
+      } else {
+        music.pause();
+        playing = false;
+        document.querySelector('.music-btn').textContent = "🔊 Play Birthday Song";
+      }
+    }
+  </script>
 </body>
 </html>
