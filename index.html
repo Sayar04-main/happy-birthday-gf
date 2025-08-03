@@ -13,6 +13,10 @@
       from { opacity: 0;}
       to   { opacity: 1;}
     }
+    @keyframes confetti {
+      0%   { transform: translateY(-100vh) rotate(0);}
+      100% { transform: translateY(100vh) rotate(360deg);}
+    }
     body {
       background: linear-gradient(120deg,#ffb6c1 0%,#ffe4e1 100%);
       color: #333;
@@ -28,7 +32,6 @@
       font-size: 76px;
       color: #ff69b4;
       margin: 40px 0 20px 0;
-      /* floating heart */
       animation: float 2.2s ease-in-out infinite;
     }
     .container {
@@ -38,18 +41,19 @@
       box-shadow: 0 2px 20px rgba(0,0,0,0.06);
       padding: 38px 32px;
       margin-top: 18px;
-      max-width: 370px;
+      max-width: 390px;
       animation: fadeIn 1.5s ease;
+      text-align: center;
     }
     h1 {
       font-size: 2.5em;
       color: #d72660;
       text-shadow: 1px 1px #fff2, 2px 2px #f3c;
     }
-    p { font-size: 1.35em;}
-    .music-btn {
-      margin-top: 32px;
-      padding: 10px 24px;
+    p { font-size: 1.25em;}
+    .music-btn, .qbtn {
+      margin-top: 20px;
+      padding: 11px 24px;
       font-size: 1em;
       border-radius: 8px;
       background: #fb6dd3;
@@ -58,32 +62,65 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    .music-btn:hover {
+    .music-btn:hover, .qbtn:hover {
       background: #d72660;
+    }
+    .question, .response {
+      margin-top: 25px;
+      animation: fadeIn 1s;
+    }
+    .qbtn {
+      margin: 12px 14px 0 14px;
+      transition: font-size 0.4s, padding 0.4s;
+    }
+    .qbtn.bigger {
+      font-size: 2em !important;
+      padding: 20px 40px !important;
+      background: #ffb6c1 !important;
+      color: #d72660 !important;
+      animation: bounce 0.4s;
+    }
+    @keyframes bounce {
+      0%   { transform: scale(1);}
+      40%  { transform: scale(1.25);}
+      60%  { transform: scale(0.93);}
+      100% { transform: scale(1);}
+    }
+    .confetti {
+      position: fixed;
+      top: -30px;
+      width: 20px; height: 20px;
+      font-size: 24px;
+      opacity: 0.88;
+      pointer-events: none;
+      animation: confetti 1.5s linear forwards;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="heart-anim" id="heart">💖</div>
+  <div class="container" id="main-container">
+    <div class="heart-anim">💖</div>
     <h1>Happy Birthday!</h1>
     <p>
       To my dearest love,<br>
-      You light up my days and fill my heart with joy.<br>
-      Wishing you the most wonderful birthday!<br>
-      <br>
-      <b>I love you more than words can say!</b>
+      I planned a little surprise for you.<br>
+      Click the button below to begin!
     </p>
     <div style="font-size:60px; margin:13px;">🎂</div>
+    <!-- MUSIC BUTTON -->
     <button class="music-btn" onclick="toggleMusic()">🔊 Play Birthday Song</button>
     <audio id="bgmusic" loop muted>
       <source src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa7c79.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
+    <br>
+    <button class="qbtn" id="start-btn" onclick="showQuestion()">Start Birthday Surprise</button>
+    <div id="question-area"></div>
+    <div id="response-area"></div>
   </div>
-
   <script>
-    // Simple toggle to play/unmute the audio
+    // Music controls
     const music = document.getElementById('bgmusic');
     let playing = false;
     function toggleMusic() {
@@ -96,6 +133,62 @@
         music.pause();
         playing = false;
         document.querySelector('.music-btn').textContent = "🔊 Play Birthday Song";
+      }
+    }
+
+    // Question logic with growing "Yes" button if "No" is clicked
+    let yesSizeTimes = 0;
+    function showQuestion() {
+      document.getElementById('start-btn').style.display = 'none';
+      document.getElementById('question-area').innerHTML = renderQuestion();
+      document.getElementById('response-area').innerHTML = '';
+    }
+
+    function renderQuestion() {
+      return `
+        <div class="question">
+          <strong>Are you ready for your birthday surprise?</strong><br>
+          <button class="qbtn${yesSizeTimes > 0 ? ' bigger' : ''}" id="yes-btn" onclick="handleAnswer('yes')">Yes</button>
+          <button class="qbtn" onclick="handleAnswer('no')">No</button>
+        </div>
+      `;
+    }
+
+    function handleAnswer(ans) {
+      if(ans === 'yes') {
+        document.getElementById('question-area').innerHTML = '';
+        showConfetti();
+        document.getElementById('response-area').innerHTML = `
+          <div class="response">
+            🎉 Yay! Here’s your surprise:<br>
+            <b>I love you endlessly.<br>May this year bring you all the happiness you deserve!</b><br>
+            💕<br><br>
+            <span style="font-size:42px;">🌟🎈🎂</span>
+          </div>
+        `;
+      } else {
+        yesSizeTimes++;
+        document.getElementById('question-area').innerHTML = renderQuestion();
+        document.getElementById('response-area').innerHTML = `
+          <div class="response">
+            Oh no! 😜<br>
+            The "Yes" button is calling your name...
+          </div>
+        `;
+      }
+    }
+
+    // Simple confetti pop (emojis!)
+    function showConfetti() {
+      for(let i=0; i<22; i++) {
+        let conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = Math.random()*90 + "%";
+        conf.style.fontSize = (20+Math.random()*16) + "px";
+        conf.style.animationDuration = (1.2+Math.random()*0.8) + "s";
+        conf.textContent = ["💖","🎉","✨","🎈","🎀","🥳"][Math.floor(Math.random()*6)];
+        document.body.appendChild(conf);
+        setTimeout(()=>{ conf.remove(); }, 1700);
       }
     }
   </script>
