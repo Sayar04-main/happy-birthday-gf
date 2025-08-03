@@ -69,16 +69,38 @@
       margin-top: 25px;
       animation: fadeIn 1s;
     }
+    .teddies-row {
+      font-size: 36px;
+      margin: 12px 0 2px 0;
+      letter-spacing: 4px;
+    }
     .qbtn {
       margin: 12px 14px 0 14px;
-      transition: font-size 0.4s, padding 0.4s;
+      transition: font-size 0.4s, padding 0.4s, width 0.4s, height 0.4s;
+      z-index: 10;
+      position: relative;
     }
     .qbtn.bigger {
-      font-size: 2em !important;
-      padding: 20px 40px !important;
-      background: #ffb6c1 !important;
+      font-size: 2.5em !important;
+      padding: 30px 50px !important;
+      background: #fff6e6 !important;
       color: #d72660 !important;
       animation: bounce 0.4s;
+    }
+    .qbtn.huge {
+      font-size: 3.2em !important;
+      padding: 48px 100px !important;
+      width: 340px !important;
+      height: 146px !important;
+      background: #fff6e6 !important;
+      color: #bf14ba !important;
+      z-index: 15;
+      position: relative;
+      box-shadow: 0 0 44px #ddaaff88;
+      animation: bounce 0.7s;
+    }
+    .qbtn.hide {
+      display: none !important;
     }
     @keyframes bounce {
       0%   { transform: scale(1);}
@@ -91,10 +113,10 @@
       top: -30px;
       width: 20px; height: 20px;
       font-size: 24px;
-      opacity: 0.88;
+      opacity: 0.92;
       pointer-events: none;
       animation: confetti 1.5s linear forwards;
-      z-index: 10;
+      z-index: 99;
     }
   </style>
 </head>
@@ -108,10 +130,10 @@
       Click the button below to begin!
     </p>
     <div style="font-size:60px; margin:13px;">🎂</div>
-    <!-- MUSIC BUTTON -->
-    <button class="music-btn" onclick="toggleMusic()">🔊 Play Birthday Song</button>
-    <audio id="bgmusic" loop muted>
-      <source src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa7c79.mp3" type="audio/mp3">
+    <button class="music-btn" onclick="startMusic()">🔊 Play Birthday Song</button>
+    <!-- Replace music with a happy birthday song (plays on first click/interaction) -->
+    <audio id="bgmusic" loop>
+      <source src="https://cdn.pixabay.com/audio/2023/03/04/audio_128b8611ce.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
     <br>
@@ -120,48 +142,69 @@
     <div id="response-area"></div>
   </div>
   <script>
-    // Music controls
+    // Music controls – play as soon as *any* button is clicked
     const music = document.getElementById('bgmusic');
-    let playing = false;
-    function toggleMusic() {
-      if (!playing) {
+    let musicStarted = false;
+    function startMusic() {
+      if (!musicStarted) {
+        music.volume = 1.0;
+        music.currentTime = 0;
         music.muted = false;
         music.play();
-        playing = true;
+        musicStarted = true;
         document.querySelector('.music-btn').textContent = "🔇 Pause";
       } else {
         music.pause();
-        playing = false;
+        musicStarted = false;
         document.querySelector('.music-btn').textContent = "🔊 Play Birthday Song";
+      }
+    }
+    // Also auto-start music when ANY question button is pressed (best effort)
+    function startMusicOnce() {
+      if (!musicStarted) {
+        startMusic();
       }
     }
 
     // Question logic with growing "Yes" button if "No" is clicked
     let yesSizeTimes = 0;
+
     function showQuestion() {
       document.getElementById('start-btn').style.display = 'none';
       document.getElementById('question-area').innerHTML = renderQuestion();
       document.getElementById('response-area').innerHTML = '';
+      startMusicOnce();
     }
 
     function renderQuestion() {
+      // When yesSizeTimes >= 3, hide the "No" button and make "Yes" HUMONGOUS
+      const yesBtnClass = yesSizeTimes === 0 ? 'qbtn' :
+                        (yesSizeTimes < 3 ? 'qbtn bigger' : 'qbtn huge');
+      const noBtnClass  = yesSizeTimes < 3 ? 'qbtn' : 'qbtn hide';
+
       return `
         <div class="question">
+          <div class="teddies-row">🧸🧸🧸</div>
           <strong>Are you ready for your birthday surprise?</strong><br>
-          <button class="qbtn${yesSizeTimes > 0 ? ' bigger' : ''}" id="yes-btn" onclick="handleAnswer('yes')">Yes</button>
-          <button class="qbtn" onclick="handleAnswer('no')">No</button>
+          <button class="${yesBtnClass}" id="yes-btn" onclick="handleAnswer('yes')">Yes</button>
+          <button class="${noBtnClass}" id="no-btn" onclick="handleAnswer('no')">No</button>
+          <div class="teddies-row">🧸🧸🧸</div>
         </div>
       `;
     }
 
     function handleAnswer(ans) {
+      startMusicOnce();
       if(ans === 'yes') {
         document.getElementById('question-area').innerHTML = '';
         showConfetti();
         document.getElementById('response-area').innerHTML = `
           <div class="response">
             🎉 Yay! Here’s your surprise:<br>
-            <b>I love you endlessly.<br>May this year bring you all the happiness you deserve!</b><br>
+            <b>I love you endlessly.<br>
+            May this year bring you all the happiness you deserve!
+            <div style="font-size:48px;margin-top:10px;">🧸🧸🧸</div>
+            </b><br>
             💕<br><br>
             <span style="font-size:42px;">🌟🎈🎂</span>
           </div>
@@ -169,24 +212,33 @@
       } else {
         yesSizeTimes++;
         document.getElementById('question-area').innerHTML = renderQuestion();
-        document.getElementById('response-area').innerHTML = `
-          <div class="response">
-            Oh no! 😜<br>
-            The "Yes" button is calling your name...
-          </div>
-        `;
+        if (yesSizeTimes < 3) {
+          document.getElementById('response-area').innerHTML = `
+            <div class="response">
+              Oh no! 😜<br>
+              The "Yes" button really wants your attention... (Look at the 🧸 cheering for you!)
+            </div>
+          `;
+        } else {
+          document.getElementById('response-area').innerHTML = `
+            <div class="response">
+              😂 Now the "Yes" button is just too cute to resist! 
+            </div>
+          `;
+        }
       }
     }
 
-    // Simple confetti pop (emojis!)
+    // Simple confetti pop (now with teddy emoji and others!)
     function showConfetti() {
-      for(let i=0; i<22; i++) {
+      const confettiEmojis = ["💖","🎉","✨","🎈","🎀","🥳","🧸"];
+      for(let i=0; i<26; i++) {
         let conf = document.createElement("div");
         conf.className = "confetti";
         conf.style.left = Math.random()*90 + "%";
-        conf.style.fontSize = (20+Math.random()*16) + "px";
+        conf.style.fontSize = (22+Math.random()*18) + "px";
         conf.style.animationDuration = (1.2+Math.random()*0.8) + "s";
-        conf.textContent = ["💖","🎉","✨","🎈","🎀","🥳"][Math.floor(Math.random()*6)];
+        conf.textContent = confettiEmojis[Math.floor(Math.random()*confettiEmojis.length)];
         document.body.appendChild(conf);
         setTimeout(()=>{ conf.remove(); }, 1700);
       }
