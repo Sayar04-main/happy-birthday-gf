@@ -4,8 +4,120 @@
   <meta charset="UTF-8">
   <title>Happy Birthday, My Love!</title>
   <style>
-    /* ... your full CSS ... */
-    /* [Omitted for brevity, use your original CSS here] */
+    @keyframes float {
+      0%   { transform: translateY(0) scale(1);}
+      50%  { transform: translateY(-30px) scale(1.15);}
+      100% { transform: translateY(0) scale(1);}
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to   { opacity: 1;}
+    }
+    @keyframes confetti {
+      0%   { transform: translateY(-100vh) rotate(0);}
+      100% { transform: translateY(100vh) rotate(360deg);}
+    }
+    body {
+      background: linear-gradient(120deg,#ffb6c1 0%,#ffe4e1 100%);
+      color: #333;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .heart-anim {
+      font-size: 76px;
+      color: #ff69b4;
+      margin: 40px 0 20px 0;
+      animation: float 2.2s ease-in-out infinite;
+    }
+    .container {
+      background: rgba(255,255,255,0.88);
+      border-radius: 18px;
+      display: inline-block;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      padding: 38px 32px;
+      margin-top: 18px;
+      max-width: 390px;
+      animation: fadeIn 1.5s ease;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #d72660;
+      text-shadow: 1px 1px #fff2, 2px 2px #f3c;
+    }
+    p { font-size: 1.25em;}
+    .music-btn, .qbtn {
+      margin-top: 20px;
+      padding: 11px 24px;
+      font-size: 1em;
+      border-radius: 8px;
+      background: #fb6dd3;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .music-btn:hover, .qbtn:hover {
+      background: #d72660;
+    }
+    .question, .response {
+      margin-top: 25px;
+      animation: fadeIn 1s;
+    }
+    .teddies-row {
+      font-size: 36px;
+      margin: 12px 0 2px 0;
+      letter-spacing: 4px;
+    }
+    .qbtn {
+      margin: 12px 14px 0 14px;
+      transition: font-size 0.4s, padding 0.4s, width 0.4s, height 0.4s;
+      z-index: 10;
+      position: relative;
+    }
+    .qbtn.bigger {
+      font-size: 2.5em !important;
+      padding: 30px 50px !important;
+      background: #fff6e6 !important;
+      color: #d72660 !important;
+      animation: bounce 0.4s;
+    }
+    .qbtn.huge {
+      font-size: 3.2em !important;
+      padding: 48px 100px !important;
+      width: 340px !important;
+      height: 146px !important;
+      background: #fff6e6 !important;
+      color: #bf14ba !important;
+      z-index: 15;
+      position: relative;
+      box-shadow: 0 0 44px #ddaaff88;
+      animation: bounce 0.7s;
+    }
+    .qbtn.hide {
+      display: none !important;
+    }
+    @keyframes bounce {
+      0%   { transform: scale(1);}
+      40%  { transform: scale(1.25);}
+      60%  { transform: scale(0.93);}
+      100% { transform: scale(1);}
+    }
+    .confetti {
+      position: fixed;
+      top: -30px;
+      width: 20px; height: 20px;
+      font-size: 24px;
+      opacity: 0.92;
+      pointer-events: none;
+      animation: confetti 1.5s linear forwards;
+      z-index: 99;
+    }
   </style>
 </head>
 <body>
@@ -19,9 +131,9 @@
     </p>
     <div style="font-size:60px; margin:13px;">🎂</div>
     <button class="music-btn" onclick="startMusic()">🔊 Play Birthday Song</button>
-    <!-- This audio source uses your actual GitHub raw file link below -->
+    <!-- Now playing local mp3 file in repo root -->
     <audio id="bgmusic" loop>
-      <source src="https://raw.githubusercontent.com/Sayar04-main/happy-birthday-gf/main/yung%20kai%20-%20blue%20(official%20music%20video).mp3" type="audio/mp3">
+      <source src="yung kai - blue (official music video).mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
     <br>
@@ -85,45 +197,4 @@
             🎉 Yay! Here’s your surprise:<br>
             <b>I love you endlessly.<br>
             May this year bring you all the happiness you deserve!
-            <div style="font-size:48px;margin-top:10px;">🧸🧸🧸</div>
-            </b><br>
-            💕<br><br>
-            <span style="font-size:42px;">🌟🎈🎂</span>
-          </div>
-        `;
-      } else {
-        yesSizeTimes++;
-        document.getElementById('question-area').innerHTML = renderQuestion();
-        if (yesSizeTimes < 3) {
-          document.getElementById('response-area').innerHTML = `
-            <div class="response">
-              Oh no! 😜<br>
-              The "Yes" button really wants your attention... (Look at the 🧸 cheering for you!)
-            </div>
-          `;
-        } else {
-          document.getElementById('response-area').innerHTML = `
-            <div class="response">
-              😂 Now the "Yes" button is just too cute to resist! 
-            </div>
-          `;
-        }
-      }
-    }
-    // Simple confetti pop (now with teddy emoji and others!)
-    function showConfetti() {
-      const confettiEmojis = ["💖","🎉","✨","🎈","🎀","🥳","🧸"];
-      for(let i=0; i<26; i++) {
-        let conf = document.createElement("div");
-        conf.className = "confetti";
-        conf.style.left = Math.random()*90 + "%";
-        conf.style.fontSize = (22+Math.random()*18) + "px";
-        conf.style.animationDuration = (1.2+Math.random()*0.8) + "s";
-        conf.textContent = confettiEmojis[Math.floor(Math.random()*confettiEmojis.length)];
-        document.body.appendChild(conf);
-        setTimeout(()=>{ conf.remove(); }, 1700);
-      }
-    }
-  </script>
-</body>
-</html>
+            <
