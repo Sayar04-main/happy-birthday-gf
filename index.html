@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <title>Happy Birthday, My Love!</title>
   <style>
-    /* ... all your CSS remains unchanged ... */
+    /* ... your full CSS ... */
+    /* [Omitted for brevity, use your original CSS here] */
   </style>
 </head>
 <body>
@@ -18,7 +19,7 @@
     </p>
     <div style="font-size:60px; margin:13px;">🎂</div>
     <button class="music-btn" onclick="startMusic()">🔊 Play Birthday Song</button>
-    <!-- Updated audio source below -->
+    <!-- This audio source uses your actual GitHub raw file link below -->
     <audio id="bgmusic" loop>
       <source src="https://raw.githubusercontent.com/Sayar04-main/happy-birthday-gf/main/yung%20kai%20-%20blue%20(official%20music%20video).mp3" type="audio/mp3">
       Your browser does not support the audio element.
@@ -61,7 +62,6 @@
       startMusicOnce();
     }
     function renderQuestion() {
-      // When yesSizeTimes >= 3, hide the "No" button and make "Yes" HUMONGOUS
       const yesBtnClass = yesSizeTimes === 0 ? 'qbtn' :
                         (yesSizeTimes < 3 ? 'qbtn bigger' : 'qbtn huge');
       const noBtnClass  = yesSizeTimes < 3 ? 'qbtn' : 'qbtn hide';
