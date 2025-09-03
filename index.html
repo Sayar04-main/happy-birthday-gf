@@ -131,9 +131,9 @@
     </p>
     <div style="font-size:60px; margin:13px;">🎂</div>
     <button class="music-btn" onclick="startMusic()">🔊 Play Birthday Song</button>
-    <!-- Replace music with a happy birthday song (plays on first click/interaction) -->
+    <!-- Custom GitHub music: update below with your file's raw link -->
     <audio id="bgmusic" loop>
-      <source src="https://cdn.pixabay.com/audio/2023/03/04/audio_128b8611ce.mp3" type="audio/mp3">
+      <source src="https://raw.githubusercontent.com/yourusername/yourrepository/yourbranch/musicfilename.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
     <br>
@@ -165,23 +165,19 @@
         startMusic();
       }
     }
-
     // Question logic with growing "Yes" button if "No" is clicked
     let yesSizeTimes = 0;
-
     function showQuestion() {
       document.getElementById('start-btn').style.display = 'none';
       document.getElementById('question-area').innerHTML = renderQuestion();
       document.getElementById('response-area').innerHTML = '';
       startMusicOnce();
     }
-
     function renderQuestion() {
       // When yesSizeTimes >= 3, hide the "No" button and make "Yes" HUMONGOUS
       const yesBtnClass = yesSizeTimes === 0 ? 'qbtn' :
                         (yesSizeTimes < 3 ? 'qbtn bigger' : 'qbtn huge');
       const noBtnClass  = yesSizeTimes < 3 ? 'qbtn' : 'qbtn hide';
-
       return `
         <div class="question">
           <div class="teddies-row">🧸🧸🧸</div>
@@ -192,7 +188,6 @@
         </div>
       `;
     }
-
     function handleAnswer(ans) {
       startMusicOnce();
       if(ans === 'yes') {
@@ -228,7 +223,6 @@
         }
       }
     }
-
     // Simple confetti pop (now with teddy emoji and others!)
     function showConfetti() {
       const confettiEmojis = ["💖","🎉","✨","🎈","🎀","🥳","🧸"];
